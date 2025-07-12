@@ -6,10 +6,10 @@ import { NavbarComponent } from "@/components/Navbar/page";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Products from "../../../../store/Productstore";
-import { chakra, Box, Image, Text, Link, Button } from "@chakra-ui/react";
+import { Box, Image, Text, Link, Button } from "@chakra-ui/react";
 import { motion, useInView ,AnimatePresence} from "framer-motion";
-import { ShoppingCart,Heart,} from "lucide-react";
-import { relative } from "path";
+import { ShoppingCart,Heart,CircleChevronRight} from "lucide-react";
+
 
 function Homepage() {
   const { user, setUser } = useAuth();
@@ -23,13 +23,8 @@ function Homepage() {
     setTopSellingList,
   } = Products();
   const [currentCategory, setcurrentCatgory] = useState<string>("Furniture");
-  const [CategoryImages, setcategoryImages] = useState<
-    { id: number; img: string }[]
-  >([]);
-  const [TopSellingItem, setTopSellingItem] =
-    useState<{ image: string; text: string }[]>();
-  const [data, setdata] = useState<number>(0);
-
+  const  [categoryDetails,setcategoryDetails] = useState<Array<string>>([])
+  const  [isMobile,setisMobile] = useState<boolean>(false)
   const imagediv = useRef(null);
   const imagedivContent = useRef(null); //for the first page main layout
   const imagedivContent2 = useRef(null); //for 2nd page 1st product div
@@ -67,6 +62,12 @@ function Homepage() {
     setTopSellingList(finalRes?.list);
   }
 
+  // function AboutCategory(){
+  // const filterItem = ProductCategory?.map((items:any,index:any)=>{
+  //   return [{"category":items?.category,description:}]
+  // })
+  // }
+
   // useEffect(() => {
   //   CatgoryWiseProduct();
   // }, [currentCategory]);
@@ -78,7 +79,12 @@ function Homepage() {
   useEffect(() => {
     // CatgoryWiseProduct();
     TopSelling();
+    window.innerWidth <= 768 ? setisMobile(true) : setisMobile(false)
   }, []);
+
+  useEffect(() => {
+    window.innerWidth <= 768 ? setisMobile(true) : setisMobile(false);
+  }, [window.innerWidth]);
 
   return (
     <Box
@@ -330,9 +336,39 @@ function Homepage() {
             >
               <Box
                 width={["100%", "70%"]}
-                height={["40%", "100%"]}
+                height={["50%", "100%"]}
                 bgColor={"#121212"}
-              ></Box>
+                className="flexed"
+                flexDirection={"column"}
+                alignItems={["flex-start"]}
+                padding={["0px 20px"]}
+                color={"#fff"}
+                letterSpacing={1}
+                gap={[5]}
+              >
+                <Text fontSize={["30px", "100px"]} fontFamily={"syncopate"}>
+                  {currentCategory}
+                </Text>
+                <Box>
+                  {ProductCategory.map((items: any) =>
+                    items?.category === currentCategory ? (
+                      <Text
+                        fontSize={["10px", "15px"]}
+                        fontFamily={"poppins"}
+                        fontWeight={400}
+                        width={["100%", "90%"]}
+                        className="flexed"
+                        padding={["0px 5px", "0px 30px"]}
+                        color={"rgba(255, 255, 255, 0.84)"}
+                      >
+                        {items?.description}
+                      </Text>
+                    ) : (
+                      <Box></Box>
+                    )
+                  )}
+                </Box>
+              </Box>
               <AnimatePresence mode="wait">
                 {currentCategory === "Furniture" && (
                   <motion.div
@@ -340,12 +376,12 @@ function Homepage() {
                     ref={imagedivContent2}
                     initial={{ opacity: 0, x: 500 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -300}}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flexed"
                     style={{
                       height: "90%",
-                      width: "40%",
+                      width: isMobile ? "90%" : "40%",
                       // flexDirection: "column",
                       gap: 8,
                       position: "relative",
@@ -354,10 +390,10 @@ function Homepage() {
                   >
                     <Image
                       src={"/furniture.png"}
-                      height={["85%", "90%"]}
+                      height={["70%", "90%"]}
                       position={"absolute"}
-                      left={-100}
-                      minWidth={["120%"]}
+                      left={[0, -100]}
+                      minWidth={["100%", "120%"]}
                       style={{
                         filter: "drop-shadow(4px 8px 40px rgba(0, 0, 0, 0.6))",
                       }}
@@ -365,8 +401,10 @@ function Homepage() {
                     <Button
                       onClick={() => setcurrentCatgory("Electronics")}
                       pointerEvents={"auto"}
+                      bg={"none"}
+                      color={"#fff"}
                     >
-                      Next
+                      <CircleChevronRight />
                     </Button>
                   </motion.div>
                 )}
@@ -377,12 +415,12 @@ function Homepage() {
                     ref={imagedivContent3}
                     initial={{ opacity: 0, x: 500 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -300}}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flexed"
                     style={{
                       height: "90%",
-                      width: "40%",
+                      width: isMobile ? "90%" : "40%",
                       gap: 8,
                       position: "relative",
                       justifyContent: "flex-end",
@@ -390,9 +428,9 @@ function Homepage() {
                   >
                     <Image
                       src={"/headphone.png"}
-                      height={["85%", "100%"]}
+                      height={["70%", "100%"]}
                       position={"absolute"}
-                      left={-100}
+                      left={[0, -100]}
                       minWidth={["100%"]}
                       style={{
                         filter: "drop-shadow(4px 8px 40px rgba(0, 0, 0, 0.6))",
@@ -401,8 +439,10 @@ function Homepage() {
                     <Button
                       onClick={() => setcurrentCatgory("Miscellaneous")}
                       pointerEvents={"auto"}
+                      bg={"none"}
+                      color={"#fff"}
                     >
-                      Next
+                      <CircleChevronRight />
                     </Button>
                   </motion.div>
                 )}
@@ -413,12 +453,12 @@ function Homepage() {
                     ref={imagedivContent4}
                     initial={{ opacity: 0, x: 500 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -300}}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flexed"
                     style={{
                       height: "90%",
-                      width: "40%",
+                      width: isMobile ? "90%" : "40%",
                       gap: 2,
                       position: "relative",
                       justifyContent: "flex-end",
@@ -426,9 +466,9 @@ function Homepage() {
                   >
                     <Image
                       src={"/miscellaneous.png"}
-                      height={["85%", "90%"]}
+                      height={["70%", "90%"]}
                       position={"absolute"}
-                      left={-100}
+                      left={[-10, -100]}
                       minWidth={["120%"]}
                       style={{
                         filter: "drop-shadow(4px 8px 40px rgba(0, 0, 0, 0.6))",
@@ -437,8 +477,10 @@ function Homepage() {
                     <Button
                       onClick={() => setcurrentCatgory("Shoes")}
                       pointerEvents={"auto"}
+                      bg={"none"}
+                      color={"#fff"}
                     >
-                      Next
+                      <CircleChevronRight />
                     </Button>
                   </motion.div>
                 )}
@@ -449,12 +491,12 @@ function Homepage() {
                     ref={imagedivContent5}
                     initial={{ opacity: 0, x: 500 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -300}}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flexed"
                     style={{
                       height: "90%",
-                      width: "40%",
+                      width: isMobile ? "90%" : "40%",
                       gap: 2,
                       position: "relative",
                       justifyContent: "flex-end",
@@ -462,20 +504,21 @@ function Homepage() {
                   >
                     <Image
                       src={"/nike.png"}
-                      height={["85%", "100%"]}
+                      height={["50%", "80%"]}
                       position={"absolute"}
-                      left={-100}
-                      minWidth={["120%"]}
+                      left={[0, -100]}
+                      minWidth={["100%", "120%"]}
                       style={{
                         filter: "drop-shadow(4px 8px 40px rgba(0, 0, 0, 0.6))",
                       }}
-                    
                     />
                     <Button
                       onClick={() => setcurrentCatgory("Clothes")}
                       pointerEvents={"auto"}
+                      bg={"none"}
+                      color={"#fff"}
                     >
-                      Next
+                      <CircleChevronRight />
                     </Button>
                   </motion.div>
                 )}
@@ -486,12 +529,12 @@ function Homepage() {
                     ref={imagedivContent6}
                     initial={{ opacity: 0, x: 500 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -300}}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flexed"
                     style={{
                       height: "100%",
-                      width: "40%",
+                      width: isMobile ? "90%" : "40%",
                       gap: 2,
                       position: "relative",
                       justifyContent: "flex-end",
@@ -499,9 +542,9 @@ function Homepage() {
                   >
                     <Image
                       src={"/model_bg.png"}
-                      height={["85%", "100%"]}
+                      height={["90%", "100%"]}
                       position={"absolute"}
-                      left={-100}
+                      left={[0, -100]}
                       minWidth={["100%"]}
                       style={{
                         filter: "drop-shadow(4px 8px 40px rgba(0, 0, 0, 0.6))",
@@ -510,8 +553,10 @@ function Homepage() {
                     <Button
                       onClick={() => setcurrentCatgory("Furniture")}
                       pointerEvents={"auto"}
+                      bg={"none"}
+                      color={"#fff"}
                     >
-                      Next
+                      <CircleChevronRight />
                     </Button>
                   </motion.div>
                 )}

@@ -91,6 +91,7 @@ export default function RootLayout({
 
     setProductList(data.list.rows);
     setCategory(data.category.rows);
+    console.log(data.category.rows)
     setLoading(false);
   };
 

@@ -4,7 +4,7 @@ import pool from "../db/dbconfig";
 export const Products = async(req:Request,res:Response):Promise<any>=>{
 
     const data = await pool.query('select * from products order by id asc')
-    const category = await pool.query('select distinct(category) from products;')
+    const category = await pool.query('select distinct category as category,categorydescription as description from products')
     if(!data){
         return res.json({"message":"empty"})
     }

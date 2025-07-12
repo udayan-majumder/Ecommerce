@@ -132,3 +132,8 @@ body {
 .scroll-child{
   scroll-snap-align: start;
 }
+@media screen and (max-width:600px){
+  .responsive-image{
+   width: 95%;
+  }
+}

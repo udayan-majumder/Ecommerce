@@ -61,7 +61,8 @@ export const NavbarComponent = ()=>{
         position={["absolute"]}
         top={0}
         left={0}
-        zIndex={1}
+        zIndex={20}
+        
       >
         {/*Logo*/}
         <Box className="flexed" height={["100%"]} width={["15%", "5%"]}>
@@ -94,41 +95,73 @@ export const NavbarComponent = ()=>{
               bgColor={["#E3DDDC"]}
               placeholder="What are you looking for?"
               fontSize={["10px", "16px"]}
-              onChange={(e)=>{
-                setsearchquery(e.target.value)
-                setresultbox(true)
+              onChange={(e) => {
+                setsearchquery(e.target.value);
+                setresultbox(true);
               }}
-              onKeyDown={(e)=>{
-                if(e.key === 'Enter'){
-                  router.push(`/user/products/?searchquery=${searchquery}`)
-                  setresultbox(false)
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  router.push(`/user/products/?searchquery=${searchquery}`);
+                  setresultbox(false);
                 }
               }}
             />
           </InputGroup>
-          {searchquery.length>0 && showresultbox ? <Box
-            height={["300%"]}
-            width={["60%"]}
-            position={"absolute"}
-            bgColor={"#fff"}
-            top={"110%"}
-            className="flexed"
-            flexDirection={["column"]}
-            justifyContent={["flex-start"]}
-            gap={[2]}
-            overflowY={["scroll"]}
-            scrollbar={["hidden"]}
-            padding={["10px 10px"]}
-            borderRadius={10}
-            boxShadow={["2px 2px 30px rgba(0,0,0,0.2)"]}
-          >
-            {resultList.length>0? resultList?.map((items:any)=>(
-              <Link height={["40%"]} width={["100%"]} className="flexed" flex={"0 0 auto"} justifyContent={["flex-start"]} borderBottom={["1px solid rgba(151, 151, 151, 0.36)"]} gap={[4]} href={`/user/products/${items?.id}`}>
-                <Image src={items?.images?.image[0]} height={["70%","80%"]} borderRadius={8}/>
-                <Text fontSize={["12px","16px"]} color={"gray.600"}>{items?.name}</Text>
-              </Link>
-            )):<Box width={["100%"]} height={["100%"]} className="flexed" fontSize={["18px"]} color={"gray.400"} fontStyle={"italic"}>Not Found!</Box>}
-          </Box>:<Box></Box>}
+          {searchquery.length > 0 && showresultbox ? (
+            <Box
+              height={["300%"]}
+              width={["60%"]}
+              position={"absolute"}
+              bgColor={"#fff"}
+              top={"110%"}
+              className="flexed"
+              flexDirection={["column"]}
+              justifyContent={["flex-start"]}
+              gap={[2]}
+              overflowY={["scroll"]}
+              scrollbar={["hidden"]}
+              padding={["10px 10px"]}
+              borderRadius={10}
+              boxShadow={["2px 2px 30px rgba(0,0,0,0.2)"]}
+            >
+              {resultList.length > 0 ? (
+                resultList?.map((items: any) => (
+                  <Link
+                    height={["40%"]}
+                    width={["100%"]}
+                    className="flexed"
+                    flex={"0 0 auto"}
+                    justifyContent={["flex-start"]}
+                    borderBottom={["1px solid rgba(151, 151, 151, 0.36)"]}
+                    gap={[4]}
+                    href={`/user/products/${items?.id}`}
+                  >
+                    <Image
+                      src={items?.images?.image[0]}
+                      height={["70%", "80%"]}
+                      borderRadius={8}
+                    />
+                    <Text fontSize={["12px", "16px"]} color={"gray.600"}>
+                      {items?.name}
+                    </Text>
+                  </Link>
+                ))
+              ) : (
+                <Box
+                  width={["100%"]}
+                  height={["100%"]}
+                  className="flexed"
+                  fontSize={["18px"]}
+                  color={"gray.400"}
+                  fontStyle={"italic"}
+                >
+                  Not Found!
+                </Box>
+              )}
+            </Box>
+          ) : (
+            <Box></Box>
+          )}
         </Box>
         {/*Cart icon */}
         <Box
@@ -139,7 +172,20 @@ export const NavbarComponent = ()=>{
           display={["none", "flex"]}
         >
           <Link color={["#000"]} href="/user/cart" position={"relative"}>
-            <Text position={"absolute"} top={0} right={0} width={["40%"]} className="flexed" backgroundColor={"red"} color={"#fff"} borderRadius={100} fontSize={["10px"]}> {UserCartList?.length}</Text>
+            <Text
+              position={"absolute"}
+              top={0}
+              right={0}
+              width={["40%"]}
+              className="flexed"
+              backgroundColor={"red"}
+              color={"#fff"}
+              borderRadius={100}
+              fontSize={["10px"]}
+            >
+              {" "}
+              {UserCartList?.length}
+            </Text>
             <ShoppingCart size={30} />
           </Link>
           <Link color={["#000"]} href="/user/whishlist">
@@ -208,7 +254,7 @@ export const NavbarComponent = ()=>{
               height={["150px", "200px"]}
               width={["100%"]}
               position={["absolute"]}
-              zIndex={10}
+              zIndex={20}
               right={0}
               top={"100%"}
               className="flexed"
