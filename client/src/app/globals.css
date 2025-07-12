@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@font-face {
+  font-family: 'Mevara';
+  src: url('../../public/fonts/MevaraTrial-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Meriva';
+  src: url('../../public/fonts/meriva.otf') format('opentype');
+  src:url('../../public/fonts/meriva.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: #121212;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.flexed{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiline-ellipsis-big {
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes Load{
+  from {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+
+.filterBox{
+  animation: slideInFromRight 0.5s ease-in-out;
+}
+
+.productBox{
+  animation: Load 0.5s ease-in-out
+}
+
+@keyframes appear {
+  from{
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes FromRightToLeft{
+  from{
+    left: 0%;
+  }
+  to{
+    left: -160%;
+  }
+}
+
+
+@keyframes FromUpToDown{
+  from{
+    top: 0%;
+  }
+  to{
+    top: -140%;
+  }
+}
+
+.scroll-parent{
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+}
+.scroll-child{
+  scroll-snap-align: start;
+}
