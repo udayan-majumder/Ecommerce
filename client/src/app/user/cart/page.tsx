@@ -58,10 +58,13 @@ function CartPage() {
   const [currentAddress, setcurrentAddress] = useState<string>("");
   const date = new Date()
 
-  if (!user) {
+  useEffect(()=>{
+   if (!user) {
     localStorage.setItem("path", path);
     return redirect("/");
   }
+  },[])
+
 
   const SortCart = (data: object[]) => {
     let temp = 0 + Shipping + CGST + SGST + platfromFee;
@@ -377,7 +380,7 @@ function CartPage() {
        callback_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/user/verifypayment`
      };
   
-     const rzp = new window.Razorpay(options);
+     const rzp:any = new window.Razorpay(options);
      rzp.open();
     }else{
       toast.error("No address is selected",{

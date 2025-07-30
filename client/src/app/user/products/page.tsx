@@ -36,11 +36,13 @@ function ProductPage() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('searchquery')
  
-  if (!user) {
-    localStorage.setItem("path", pathname);
-    return redirect("/");
-  }
 
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem("path", pathname);
+      return redirect("/");
+    }
+  }, []);
   function sortProducts() {
     setsortLoading(true)
     let temp = ProductList;

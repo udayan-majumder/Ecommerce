@@ -192,10 +192,13 @@ function ProductDetailsPage() {
     }
   }, [selectedProduct]);
 
-  if (!user) {
-    localStorage.setItem("path", pathname);
-    return redirect("/");
-  }
+
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem("path", pathname);
+      return redirect("/");
+    }
+  }, []);
 
   if (selectedImage !== "" && selectedProduct?.id) {
     return (

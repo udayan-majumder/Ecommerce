@@ -41,10 +41,12 @@ function Homepage() {
   const inView5 = useInView(imagedivContent, { amount: 0.8, once: false }); //for the first page main layout
   const inView6 = useInView(imagedivContent2, { amount: 0.2, once: false });
 
-  if (!user) {
+  useEffect(()=>{
+   if (!user) {
     localStorage.setItem("path", pathname);
     return redirect("/");
   }
+  },[])
 
   
 

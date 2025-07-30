@@ -4,7 +4,7 @@ import {
   PasswordInput,
   PasswordStrengthMeter,
 } from "@/components/ui/password-input";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useAuth } from "../../../../hooks/userAuth";
 import { redirect } from "next/navigation";
 import toast,{Toaster} from "react-hot-toast";
@@ -23,10 +23,13 @@ const [divOpacity,setOpacity] = useState<number|null>(1)
 const {user,setUser} = useAuth()
 const pathname = usePathname()
 
-if(user){
-  localStorage.setItem('path',pathname)
-    return redirect('/')
-}
+
+  useEffect(()=>{
+   if (!user) {
+    localStorage.setItem("path", pathname);
+    return redirect("/");
+  }
+  },[])
 
 async function RegisterHandler() {
 setOpacity(0.6)

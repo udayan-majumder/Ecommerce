@@ -11,7 +11,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "../../hooks/userAuth";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Products from "../../store/Productstore";
 import { Provider } from "@/components/ui/provider";
 import { useAuth } from "../../hooks/userAuth";
@@ -105,7 +105,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${opensans.variable} ${roboto.variable} ${rubik.variable}  ${tektur.variable} ${syncopate.variable}antialiased`}
       >
         <Provider>
-          <UserProvider>{children}</UserProvider>
+          <UserProvider>
+            <Suspense>{children}</Suspense>
+          </UserProvider>
         </Provider>
       </body>
     </html>
