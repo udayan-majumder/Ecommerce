@@ -12,11 +12,14 @@ function MyOrderPage(){
 const {user} = useAuth()
 const path = usePathname()
 const {UserOrders,setUserOrders} = Products()
-const scrollRef = useRef(null)
-if(!user){
-localStorage.setItem('path',path)
-return redirect("/")
-}
+const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(()=>{
+   if (!user) {
+    localStorage.setItem("path", path);
+    return redirect("/");
+  }
+  },[])
 
 const getOrders = async()=>{
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/getpaymentdetails`,{

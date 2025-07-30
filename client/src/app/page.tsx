@@ -17,14 +17,22 @@ export default function Home() {
     if (!token) {
       setUser(null);
     }
+
     if (!user) {
       if (path?.includes("/user")) {
         return redirect("/auth/login");
       }
       return redirect(`${path}`);
     }
+
     if (path?.includes("/auth")) {
       return redirect("/user/home");
+    }
+    if(path?.includes("/admin")){
+      if(user?.userType === 'admin'){
+        return redirect(`${path}`)
+      }
+      return redirect('/user/home')
     }
     return redirect(`${path}`);
   }, 1500);

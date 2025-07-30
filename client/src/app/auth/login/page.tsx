@@ -35,6 +35,15 @@ function LoginComponent() {
   const { ProductList, loading } = Products();
   const pathname = usePathname();
 
+
+
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem("path", pathname);
+      return redirect("/");
+    }
+  }, []);
+
   async function loginHandler() {
     if (!userEmail && !userPassword) {
       return toast.error("Enter email and Password");
@@ -245,8 +254,7 @@ function LoginComponent() {
       </Box>
     );
   }
-  localStorage.setItem("path", pathname);
-  return redirect("/");
+
 }
 
 export default LoginComponent;
