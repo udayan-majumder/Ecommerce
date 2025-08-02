@@ -1,9 +1,10 @@
 
-
+"use client"
 
 import { Box, Image ,Text,Button, Link as ChakraLink} from "@chakra-ui/react"
 import { ShoppingCart, Heart} from "lucide-react";
-import NextLink from "next/link"
+// import NextLink from "next/link"
+import {useRouter} from "next/navigation"
 
 interface ProductCardProps {
   Product: object[]; // make it more specific if possible (e.g., ProductType)
@@ -11,7 +12,7 @@ interface ProductCardProps {
 }
 
 export const ProductCards = ({Product,addtocartHandler}:ProductCardProps)=>{
-
+const router =useRouter()
 
 return (
   <Box
@@ -44,14 +45,16 @@ return (
     ) : (
       <div></div>
     )}
-    <ChakraLink as={NextLink} href={`/user/products/${Product?.id}`}>
+    <Button onClick={()=>{router.push(`/user/products/${Product?.id}`)}} height={["60%"]} width={["95%"]} p={0} margin={"unset"}>
       <Image
         src={Product?.images?.image[0]}
         borderRadius={"10px"}
         opacity={Product?.qty > 0 ? 1 : 0.4}
         height={"100%"}
+        width={["100%"]}
+        flex={"0 0 auto"}
       />
-    </ChakraLink>
+    </Button>
 
     {/*product details */}
     <Box

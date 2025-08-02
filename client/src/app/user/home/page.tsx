@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "../../../../hooks/userAuth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { NavbarComponent } from "@/components/Navbar/page";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -40,13 +40,36 @@ function Homepage() {
   });
   const inView5 = useInView(imagedivContent, { amount: 0.8, once: false }); //for the first page main layout
   const inView6 = useInView(imagedivContent2, { amount: 0.2, once: false });
+  const router = useRouter();
 
-  useEffect(()=>{
-   if (!user) {
+
+useEffect(() => {
+  const path = localStorage.getItem("path") || pathname;
+  const token = localStorage.getItem("token");
+
+  if (!user || !token) {
     localStorage.setItem("path", pathname);
-    return redirect("/");
+    router.push("/auth/login");
+    return;
   }
-  },[])
+
+  if (path.includes("/auth")) {
+    router.push("/user/home");
+    return;
+  }
+
+  if (path.includes("/admin")) {
+    if (user?.userType === "admin") {
+      router.push(path);
+    } else {
+      router.push("/user/home");
+    }
+    return;
+  }
+
+  router.push(path);
+}, [user]);
+ 
 
   
 
