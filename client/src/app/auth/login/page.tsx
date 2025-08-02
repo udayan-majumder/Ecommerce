@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/password-input";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/userAuth";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, usePathname ,useRouter} from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import Products from "../../../../store/Productstore";
 
@@ -33,16 +33,40 @@ function LoginComponent() {
   const [divOpacity, setOpacity] = useState<number | null>(1);
   const { user, setUser } = useAuth();
   const { ProductList, loading } = Products();
-  const pathname = usePathname();
 
 
 
-  useEffect(() => {
-    if (!user) {
-      localStorage.setItem("path", pathname);
-      return redirect("/");
+  
+const router = useRouter();
+const pathname = usePathname();
+
+useEffect(() => {
+  const path = localStorage.getItem("path") || pathname;
+  const token = localStorage.getItem("token");
+
+  if (!user || !token) {
+    localStorage.setItem("path", pathname);
+    router.push("/auth/login");
+    return;
+  }
+
+  if (path.includes("/auth")) {
+    router.push("/user/home");
+    return;
+  }
+
+  if (path.includes("/admin")) {
+    if (user?.userType === "admin") {
+      router.push(path);
+    } else {
+      router.push("/user/home");
     }
-  }, []);
+    return;
+  }
+
+  router.push(path);
+}, [user]);
+  
 
   async function loginHandler() {
     if (!userEmail && !userPassword) {

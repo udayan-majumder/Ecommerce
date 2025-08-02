@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from "../../../../hooks/userAuth"
-import { redirect,usePathname } from "next/navigation"
+import { useRouter,usePathname } from "next/navigation"
 import { Box ,Image,Text,Breadcrumb,Link,Button,Spinner} from "@chakra-ui/react"
 import { NavbarComponent } from "@/components/Navbar/page"
 import { useEffect,useRef } from "react"
@@ -10,16 +10,38 @@ import Products from "../../../../store/Productstore"
 function MyOrderPage(){
 
 const {user} = useAuth()
-const path = usePathname()
+const pathname = usePathname()
 const {UserOrders,setUserOrders} = Products()
 const scrollRef = useRef<HTMLDivElement>(null)
+const router = useRouter();
 
-  useEffect(()=>{
-   if (!user) {
-    localStorage.setItem("path", path);
-    return redirect("/");
+
+useEffect(() => {
+  const path = localStorage.getItem("path") || pathname;
+  const token = localStorage.getItem("token");
+
+  if (!user || !token) {
+    localStorage.setItem("path", pathname);
+    router.push("/auth/login");
+    return;
   }
-  },[])
+
+  if (path.includes("/auth")) {
+    router.push("/user/home");
+    return;
+  }
+
+  if (path.includes("/admin")) {
+    if (user?.userType === "admin") {
+      router.push(path);
+    } else {
+      router.push("/user/home");
+    }
+    return;
+  }
+
+  router.push(path);
+}, [user]);
 
 const getOrders = async()=>{
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/getpaymentdetails`,{

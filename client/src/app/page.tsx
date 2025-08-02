@@ -1,42 +1,41 @@
 "use client";
 
 import { useAuth } from "../../hooks/userAuth";
-import { redirect } from "next/navigation";
+import { useRouter,usePathname } from "next/navigation";
 import { Box, Spinner, Text } from "@chakra-ui/react";
-
+import { useEffect } from "react";
 export default function Home() {
   const { user, setUser } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  setTimeout(() => {
-    const path = localStorage.getItem("path");
-    if (!path) {
-      localStorage.removeItem("token");
-      return redirect("/auth/login");
-    }
+  useEffect(() => {
+    const path = localStorage.getItem("path") || pathname;
     const token = localStorage.getItem("token");
-    if (!token) {
-      setUser(null);
+ 
+    if (!user || !token) {
+      localStorage.setItem("path", pathname);
+      router.push("/auth/login");
+      return;
     }
 
-    if (!user) {
-      if (path?.includes("/user")) {
-        return redirect("/auth/login");
+    if (path.includes("/auth")) {
+      router.push("/user/home");
+      return;
+    }
+
+    if (path.includes("/admin")) {
+      if (user?.userType === "admin") {
+        router.push(path);
+      } else {
+        router.push("/user/home");
       }
-      return redirect(`${path}`);
+      return;
     }
 
-    if (path?.includes("/auth")) {
-      return redirect("/user/home");
-    }
-    if(path?.includes("/admin")){
-      if(user?.userType === 'admin'){
-        return redirect(`${path}`)
-      }
-      return redirect('/user/home')
-    }
-    return redirect(`${path}`);
-  }, 1500);
-
+    router.push(path);
+  }, [user]);
+ 
   return (
     <Box
       height={["100vh"]}

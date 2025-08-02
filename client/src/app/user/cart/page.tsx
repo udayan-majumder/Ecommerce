@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/userAuth";
 import Products from "../../../../store/Productstore";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, usePathname,useRouter } from "next/navigation";
 import {
   Box,
   Text,
@@ -58,12 +58,36 @@ function CartPage() {
   const [currentAddress, setcurrentAddress] = useState<string>("");
   const date = new Date()
 
-  useEffect(()=>{
-   if (!user) {
-    localStorage.setItem("path", path);
-    return redirect("/");
+const router = useRouter();
+const pathname = usePathname();
+
+useEffect(() => {
+  const path = localStorage.getItem("path") || pathname;
+  const token = localStorage.getItem("token");
+
+  if (!user || !token) {
+    localStorage.setItem("path", pathname);
+    router.push("/auth/login");
+    return;
   }
-  },[])
+
+  if (path.includes("/auth")) {
+    router.push("/user/home");
+    return;
+  }
+
+  if (path.includes("/admin")) {
+    if (user?.userType === "admin") {
+      router.push(path);
+    } else {
+      router.push("/user/home");
+    }
+    return;
+  }
+
+  router.push(path);
+}, [user]);
+
 
 
   const SortCart = (data: object[]) => {

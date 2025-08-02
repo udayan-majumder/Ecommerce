@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/password-input";
 import { useState,useEffect } from "react";
 import { useAuth } from "../../../../hooks/userAuth";
-import { redirect } from "next/navigation";
+import { redirect ,useRouter} from "next/navigation";
 import toast,{Toaster} from "react-hot-toast";
 import { usePathname } from "next/navigation";
 
@@ -24,12 +24,36 @@ const {user,setUser} = useAuth()
 const pathname = usePathname()
 
 
-  useEffect(()=>{
-   if (!user) {
+const router = useRouter();
+
+
+useEffect(() => {
+  const path = localStorage.getItem("path") || pathname;
+  const token = localStorage.getItem("token");
+
+  if (!user || !token) {
     localStorage.setItem("path", pathname);
-    return redirect("/");
+    router.push("/auth/login");
+    return;
   }
-  },[])
+
+  if (path.includes("/auth")) {
+    router.push("/user/home");
+    return;
+  }
+
+  if (path.includes("/admin")) {
+    if (user?.userType === "admin") {
+      router.push(path);
+    } else {
+      router.push("/user/home");
+    }
+    return;
+  }
+
+  router.push(path);
+}, [user]);
+
 
 async function RegisterHandler() {
 setOpacity(0.6)
