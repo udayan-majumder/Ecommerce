@@ -3,7 +3,7 @@
 import { useAuth } from "../../../../hooks/userAuth";
 import { useRouter } from "next/navigation";
 import { NavbarComponent } from "@/components/Navbar/page";
-import { usePathname } from "next/navigation";
+import { usePathname,redirect } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Products from "../../../../store/Productstore";
 import { Box, Image, Text, Link, Button } from "@chakra-ui/react";
@@ -43,35 +43,13 @@ function Homepage() {
   const router = useRouter();
 
 
-useEffect(() => {
-  const path = localStorage.getItem("path") || pathname;
-  const token = localStorage.getItem("token");
+/
 
-  if (!user || !token) {
-    localStorage.setItem("path", pathname);
-    router.push("/auth/login");
-    return;
-  }
-
-  if (path.includes("/auth")) {
-    router.push("/user/home");
-    return;
-  }
-
-  if (path.includes("/admin")) {
-    if (user?.userType === "admin") {
-      router.push(path);
-    } else {
-      router.push("/user/home");
-    }
-    return;
-  }
-
-  router.push(path);
-}, [user]);
- 
-
-  
+    useEffect(()=>{
+      if(!user){
+        return redirect("/auth/login")
+      }
+    },[user])
 
   async function TopSelling() {
     const res = await fetch(
@@ -87,19 +65,7 @@ useEffect(() => {
     setTopSellingList(finalRes?.list);
   }
 
-  // function AboutCategory(){
-  // const filterItem = ProductCategory?.map((items:any,index:any)=>{
-  //   return [{"category":items?.category,description:}]
-  // })
-  // }
 
-  // useEffect(() => {
-  //   CatgoryWiseProduct();
-  // }, [currentCategory]);
-
-  // useEffect(() => {
-  //  SortTopSelling()
-  // }, [TopSellingList]);
 
   useEffect(() => {
     // CatgoryWiseProduct();
@@ -233,13 +199,13 @@ useEffect(() => {
                       Shoppy is a modern e-commerce platform that makes online
                       shopping seamless, stylish, and user-friendly.
                     </Text>
-                    <Link
+                    <Button
                       fontFamily={"monospace"}
                       bgColor={"#fff"}
                       padding={"10px 25px"}
                       color={"#000"}
                       borderRadius={30}
-                      href={"/user/products"}
+                      onClick={()=>{router.push("/user/products")}}
                       transition={"all 1s ease-in-out"}
                       _hover={{
                         transition: "all 1s ease-in-out",
@@ -248,7 +214,7 @@ useEffect(() => {
                       textDecoration={"none"}
                     >
                       Products
-                    </Link>
+                    </Button>
                   </Box>
                   <Box
                     className="flexed"

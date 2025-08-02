@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from "../../../../hooks/userAuth"
-import { useRouter,usePathname } from "next/navigation"
+import { useRouter,usePathname ,redirect} from "next/navigation"
 import { Box ,Image,Text,Breadcrumb,Link,Button,Spinner} from "@chakra-ui/react"
 import { NavbarComponent } from "@/components/Navbar/page"
 import { useEffect,useRef } from "react"
@@ -16,32 +16,13 @@ const scrollRef = useRef<HTMLDivElement>(null)
 const router = useRouter();
 
 
-useEffect(() => {
-  const path = localStorage.getItem("path") || pathname;
-  const token = localStorage.getItem("token");
 
-  if (!user || !token) {
-    localStorage.setItem("path", pathname);
-    router.push("/auth/login");
-    return;
-  }
 
-  if (path.includes("/auth")) {
-    router.push("/user/home");
-    return;
-  }
-
-  if (path.includes("/admin")) {
-    if (user?.userType === "admin") {
-      router.push(path);
-    } else {
-      router.push("/user/home");
+  useEffect(()=>{
+    if(!user){
+      return redirect("/auth/login")
     }
-    return;
-  }
-
-  router.push(path);
-}, [user]);
+  },[user])
 
 const getOrders = async()=>{
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/getpaymentdetails`,{
@@ -56,7 +37,6 @@ const getOrders = async()=>{
   
   const finalRes = await res.json()
   setUserOrders(finalRes?.paymentlist)
-  console.log(finalRes)
 
 }
 
@@ -135,7 +115,7 @@ if(UserOrders){
           scrollbar={"hidden"}
         >
           {UserOrders.length>0?UserOrders.map((items: any) => (
-            <Link
+            <Button
               minHeight={["80%", "100%"]}
               minWidth={["100%", "25%"]}
               // bgColor={"red"}
@@ -145,7 +125,7 @@ if(UserOrders){
               borderRadius={10}
               color={"#000"}
               textDecoration={"none"}
-              href={`/user/products/${items?.productid}`}
+              onClick={()=>{router.push(`/user/products/${items?.productid}`)}}
             >
               <Box
                 height={["95%"]}
@@ -212,7 +192,7 @@ if(UserOrders){
                   <Text>qty : {items?.qty}</Text>
                 </Box>
               </Box>
-            </Link>
+            </Button>
           )):<Box height={["100%"]} width={["100%"]} className="flexed" flexDirection={["column"]} gap={[10]}>
              <Text fontSize={["24px"]} color={"gray.400"} fontStyle={"italic"}>No Items Yet!</Text>
              <Link height={["10%"]} width={["60%","12%"]} bgColor={"brown"} className="flexed" borderRadius={10} fontSize={"16px"} gap={[2]} href="/user/products">Browse Products <PackageSearch/></Link>

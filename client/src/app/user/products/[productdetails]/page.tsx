@@ -117,7 +117,6 @@ function ProductDetailsPage() {
     );
 
     const finalres = await res.json();
-    console.log(finalres);
     if (finalres?.message === "Ratings Added Successfully") {
       toast.success("Ratings Added Successfully", {
         position: "bottom-right",
@@ -192,48 +191,13 @@ function ProductDetailsPage() {
     }
   }, [selectedProduct]);
 
+    useEffect(() => {
+      if (!user) {
+        return redirect("/auth/login");
+      }
+    }, [user]);
 
 
-
-useEffect(() => {
-  const token = localStorage.getItem("token");
-  const fullPath =
-    typeof window !== "undefined" ? window.location.pathname : pathname;
-  const path = localStorage.getItem("path") || fullPath;
-
-  // Save path only if not authenticated
-  if (!user || !token) {
-      console.log("main page");
-    router.push("/auth/login");
-    return;
-  }
-
-  // Prevent redirect loops
-  if (path.includes("/auth")) {
-    router.push("/user/home");
-    return;
-  }
-
-  // If it's admin path, verify role
-  if (path.includes("/admin")) {
-    if (user?.userType === "admin") {
-      router.push(path);
-    } else {
-      router.push("/user/home");
-    }
-    return;
-  }
-
- 
-  if(path.includes(`user/products/${queryproductid}`) && path === `user/products/${queryproductid}`){
-     console.log("Redirecting to:", path);
-    router.push(path);
-  }
-  else {
-     console.log("Redirecting to:", path,"/",queryproductid) ;
-    router.push(path + "/" + queryproductid);
-  }
-}, [user]);
 
 
 
