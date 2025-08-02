@@ -61,33 +61,12 @@ function CartPage() {
 const router = useRouter();
 const pathname = usePathname();
 
-useEffect(() => {
-  const path = localStorage.getItem("path") || pathname;
-  const token = localStorage.getItem("token");
-
-  if (!user || !token) {
-    localStorage.setItem("path", pathname);
-    router.push("/auth/login");
-    return;
-  }
-
-  if (path.includes("/auth")) {
-    router.push("/user/home");
-    return;
-  }
-
-  if (path.includes("/admin")) {
-    if (user?.userType === "admin") {
-      router.push(path);
-    } else {
-      router.push("/user/home");
+ 
+  useEffect(()=>{
+    if(!user){
+      return redirect("/auth/login")
     }
-    return;
-  }
-
-  router.push(path);
-}, [user]);
-
+  },[user])
 
 
   const SortCart = (data: object[]) => {
@@ -100,7 +79,6 @@ useEffect(() => {
          const items:any = PromocodesList[i];
          if (items?.name === appliedPromocode?.code) {
            temp = temp - items?.value;
-           console.log(items?.value);
            setDiscount(items?.value);
            setappliedPromocode({
              code: items.name,
@@ -115,7 +93,6 @@ useEffect(() => {
     data?.forEach((products: any) => {
       temp = temp + products?.productdetails?.price * products?.qty;
     });
-    console.log(temp);
     setTotalPrice(temp);
   };
 
@@ -133,7 +110,6 @@ useEffect(() => {
       }
     );
     const finalRes = await res.json();
-    console.log(finalRes?.list)
     addtoCart(finalRes?.list);
     SortCart(finalRes?.list);
     if (cartLoading) {
@@ -226,7 +202,6 @@ useEffect(() => {
         }
       );
       const getfinalRes = await getres.json();
-      console.log(getfinalRes?.list);
       addtoCart(getfinalRes?.list);
       toast.dismiss(loader);
       setReload(true);
@@ -266,7 +241,6 @@ useEffect(() => {
       }
     );
     const getfinalRes = await getres.json();
-    console.log(getfinalRes?.list);
     addtoCart(getfinalRes?.list);
   };
 
@@ -316,7 +290,6 @@ useEffect(() => {
       }
     );
     const finalRes = await res.json();
-    console.log(finalRes);
     setAddress(finalRes.AddressList);
   };
 
@@ -342,7 +315,6 @@ useEffect(() => {
         color: "#fff",
       },
     });
-    console.log(addressId)
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/user/deleteaddress`,
       {
@@ -393,7 +365,6 @@ useEffect(() => {
       }
     );
      const order = await res.json();
-     console.log(order);
      const options: any = {
        key: process.env.NEXT_PUBLIC_RAZORPAY_KEYID, // Replace with your Razorpay key_id
        amount: order?.createdOrder?.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -580,7 +551,6 @@ useEffect(() => {
                       value={currentAddress}
                       onValueChange={(e: any) => {
                         setcurrentAddress(e.value);
-                        console.log(e.value);
                       }}
                       height={["100%"]}
                       width={["100%"]}
@@ -729,7 +699,6 @@ useEffect(() => {
                       bgColor={"brown"}
                       _hover={{ bgColor: "#BA6263" }}
                       onClick={() => {
-                        console.log(UserCartList);
                         removeCartHandler();
                       }}
                     >
@@ -895,16 +864,16 @@ useEffect(() => {
                         >
                           No items in your cart!
                         </Text>
-                        <Link
+                        <Button
                           bgColor={"brown"}
                           color={"#fff"}
                           padding={"8px 15px"}
                           borderRadius={"6px"}
-                          href="/user/products"
+                           onClick={()=>{router.push("/user/products")}}
                           letterSpacing={1}
                         >
                           Browse Products <PackageSearch />
-                        </Link>
+                        </Button>
                       </Box>
                     )}
                   </Box>

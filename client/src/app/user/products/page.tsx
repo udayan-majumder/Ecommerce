@@ -40,32 +40,11 @@ function ProductPage() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const path = localStorage.getItem("path") || pathname;
-    const token = localStorage.getItem("token");
-
-    if (!user || !token) {
-      localStorage.setItem("path", pathname);
-      router.push("/auth/login");
-      return;
-    }
-
-    if (path.includes("/auth")) {
-      router.push("/user/home");
-      return;
-    }
-
-    if (path.includes("/admin")) {
-      if (user?.userType === "admin") {
-        router.push(path);
-      } else {
-        router.push("/user/home");
+    useEffect(() => {
+      if (!user) {
+        return redirect("/auth/login");
       }
-      return;
-    }
-
-    router.push(path);
-  }, [user]);
+    }, [user]);
 
   function sortProducts() {
     setsortLoading(true)
@@ -74,7 +53,6 @@ function ProductPage() {
     if(searchQuery){
       temp = temp.filter((items:any)=> items?.name?.toLowerCase().includes(searchQuery.toLowerCase()))
     }
-    console.log(searchQuery)
     if(tempCategory.length>0){
       temp = temp.filter((items:any)=> tempCategory.includes(items.category));
     }
@@ -152,7 +130,6 @@ function ProductPage() {
         }
       );
       const finalRes = await res.json();
-      console.log(finalRes?.list);
       addtoCart(finalRes?.list);
     }
   }

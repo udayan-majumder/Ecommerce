@@ -44,7 +44,6 @@ const getUser = async () => {
     }
   );
   const res = await data.json();
-  console.log(res.UserLogged);
   res.UserLogged? setUser(res.UserLogged) : setUser(null)
 };
 

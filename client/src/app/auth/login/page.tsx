@@ -40,33 +40,13 @@ function LoginComponent() {
 const router = useRouter();
 const pathname = usePathname();
 
-useEffect(() => {
-  const path = localStorage.getItem("path") || pathname;
-  const token = localStorage.getItem("token");
 
-  if (!user || !token) {
-    localStorage.setItem("path", pathname);
-    router.push("/auth/login");
-    return;
-  }
-
-  if (path.includes("/auth")) {
-    router.push("/user/home");
-    return;
-  }
-
-  if (path.includes("/admin")) {
-    if (user?.userType === "admin") {
-      router.push(path);
-    } else {
-      router.push("/user/home");
-    }
-    return;
-  }
-
-  router.push(path);
-}, [user]);
   
+useEffect(()=>{
+  if(user){
+    return redirect("/user/home")
+  }
+},[user])
 
   async function loginHandler() {
     if (!userEmail && !userPassword) {
@@ -108,10 +88,11 @@ useEffect(() => {
     setTimeout(() => {
       setUser(res.User);
       localStorage.setItem("token", res.token);
+      router.push("/user/home")
     }, 1000);
   }
 
-  if (!user) {
+
     return (
       <Box
         height={["100vh"]}
@@ -279,6 +260,6 @@ useEffect(() => {
     );
   }
 
-}
+
 
 export default LoginComponent;

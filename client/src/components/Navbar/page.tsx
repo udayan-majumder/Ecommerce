@@ -35,7 +35,7 @@ export const NavbarComponent = ()=>{
         }
       );
       const finalRes = await res.json();
-      console.log(finalRes?.list);
+      (finalRes?.list);
       addtoCart(finalRes?.list);
     }
     useEffect(()=>{
@@ -66,8 +66,8 @@ export const NavbarComponent = ()=>{
       >
         {/*Logo*/}
         <Box className="flexed" height={["100%"]} width={["15%", "5%"]}>
-          <Link
-            href="/user/home"
+          <Button
+            onClick={()=>{router.push("/user/home")}}
             className="flexed"
             height={["100%"]}
             width={["100%"]}
@@ -77,7 +77,7 @@ export const NavbarComponent = ()=>{
               height={["80%"]}
               borderRadius={["40px"]}
             ></Image>
-          </Link>
+          </Button>
         </Box>
         {/*search bar*/}
         <Box
@@ -126,7 +126,7 @@ export const NavbarComponent = ()=>{
             >
               {resultList.length > 0 ? (
                 resultList?.map((items: any) => (
-                  <Link
+                  <Button
                     height={["40%"]}
                     width={["100%"]}
                     className="flexed"
@@ -134,7 +134,7 @@ export const NavbarComponent = ()=>{
                     justifyContent={["flex-start"]}
                     borderBottom={["1px solid rgba(151, 151, 151, 0.36)"]}
                     gap={[4]}
-                    href={`/user/products/${items?.id}`}
+                    onClick={()=>{router.push(`/user/products/${items?.id}`)}}
                   >
                     <Image
                       src={items?.images?.image[0]}
@@ -144,7 +144,7 @@ export const NavbarComponent = ()=>{
                     <Text fontSize={["12px", "16px"]} color={"gray.600"}>
                       {items?.name}
                     </Text>
-                  </Link>
+                  </Button>
                 ))
               ) : (
                 <Box
@@ -171,7 +171,7 @@ export const NavbarComponent = ()=>{
           justifyContent={["space-around"]}
           display={["none", "flex"]}
         >
-          <Link color={["#000"]} href="/user/cart" position={"relative"}>
+          <Button color={["#000"]}  onClick={()=>{router.push("/user/cart")}} position={"relative"}>
             <Text
               position={"absolute"}
               top={0}
@@ -187,21 +187,21 @@ export const NavbarComponent = ()=>{
               {UserCartList?.length}
             </Text>
             <ShoppingCart size={30} />
-          </Link>
-          <Link color={["#000"]} href="/user/whishlist">
+          </Button>
+          <Button color={["#000"]}  onClick={()=>{router.push("/user/whishlist")}}>
             <Heart />
-          </Link>
+          </Button>
 
-          <Link color={["#000"]} href="/user/home">
+          <Button color={["#000"]}  onClick={()=>{router.push("/user/home")}}>
             Home
-          </Link>
-          <Link color={["#000"]} href="/user/products">
+          </Button>
+          <Button color={["#000"]}  onClick={()=>{router.push("/user/products")}}>
             Products
-          </Link>
+          </Button>
           {user?.userType === "admin" ? (
-            <Link color={["#000"]} href="/admin/adminpanel">
+            <Button color={["#000"]}  onClick={()=>{router.push("/admin/adminpanel")}}>
               Dashboard
-            </Link>
+            </Button>
           ) : (
             <Link></Link>
           )}
@@ -218,7 +218,7 @@ export const NavbarComponent = ()=>{
           outline={"none"}
           onClick={() => {
             dropDown ? setdropDown(false) : setdropDown(true);
-            console.log(dropDown);
+            (dropDown);
           }}
         >
           <Box
@@ -268,42 +268,42 @@ export const NavbarComponent = ()=>{
                 bgColor={"#E7E4E4"}
                 borderRadius={["8px"]}
               >
-                <Link
+                <Button
                   height={["18%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                  href="/user/cart"
+                   onClick={()=>{router.push("/user/cart")}}
                   fontSize={["10px", "14px"]}
                 >
                   Cart
-                </Link>
-                <Link
+                </Button>
+                <Button
                   height={["18%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                  href="/user/orders"
+                   onClick={()=>{router.push("/user/orders")}}
                   fontSize={["10px", "14px"]}
                 >
                   My orders
-                </Link>
-                <Link
+                </Button>
+                <Button
                   height={["18%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                  href="/user/whislist"
+                   onClick={()=>{router.push("/user/whislist")}}
                   fontSize={["10px", "14px"]}
                 >
                   Whistlist
-                </Link>
+                </Button>
                 <Button
                   height={["18%"]}
                   width={["95%"]}
@@ -314,7 +314,9 @@ export const NavbarComponent = ()=>{
                   fontSize={["10px", "14px"]}
                   onClick={() => {
                     localStorage.removeItem("token");
-                    return redirect("/");
+                    setUser(null);
+                    return redirect("/")
+                    
                   }}
                 >
                   Logout
