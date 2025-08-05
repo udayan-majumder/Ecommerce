@@ -111,7 +111,7 @@ export const NavbarComponent = ()=>{
           {searchquery.length > 0 && showresultbox ? (
             <Box
               height={["300%"]}
-              width={["60%"]}
+              width={["85%","60%"]}
               position={"absolute"}
               bgColor={"#fff"}
               top={"110%"}
@@ -124,6 +124,7 @@ export const NavbarComponent = ()=>{
               padding={["10px 10px"]}
               borderRadius={10}
               boxShadow={["2px 2px 30px rgba(0,0,0,0.2)"]}
+              overflowX={"hidden"}
             >
               {resultList.length > 0 ? (
                 resultList?.map((items: any) => (
