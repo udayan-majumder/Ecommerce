@@ -158,6 +158,36 @@ function Homepage() {
                 >
                   Shoppy
                 </Text>
+                <Text
+                  width={["70%"]}
+                  fontFamily={"poppins"}
+                  fontSize={["8px", "14px"]}
+                  display={["flex", "none"]}
+                  className="flexed"
+                  padding={["10px 10px"]}
+                >
+                  Shoppy is a modern e-commerce platform that makes online
+                  shopping seamless, stylish, and user-friendly.
+                </Text>
+                <Button
+                  fontFamily={"monospace"}
+                  bgColor={"#fff"}
+                  padding={"10px 25px"}
+                  color={"#000"}
+                  borderRadius={30}
+                  onClick={() => {
+                    router.push("/user/products");
+                  }}
+                  transition={"all 1s ease-in-out"}
+                  _hover={{
+                    transition: "all 1s ease-in-out",
+                    backgroundColor: "rgb(199, 199, 199)",
+                  }}
+                  textDecoration={"none"}
+                  display={["flex", "none"]}
+                >
+                  Products
+                </Button>
               </motion.div>
               <motion.div
                 ref={imagedivContent}
@@ -205,7 +235,9 @@ function Homepage() {
                       padding={"10px 25px"}
                       color={"#000"}
                       borderRadius={30}
-                      onClick={()=>{router.push("/user/products")}}
+                      onClick={() => {
+                        router.push("/user/products");
+                      }}
                       transition={"all 1s ease-in-out"}
                       _hover={{
                         transition: "all 1s ease-in-out",
