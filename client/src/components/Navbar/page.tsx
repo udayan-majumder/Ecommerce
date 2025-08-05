@@ -62,12 +62,13 @@ export const NavbarComponent = ()=>{
         top={0}
         left={0}
         zIndex={20}
-        
       >
         {/*Logo*/}
-        <Box className="flexed" height={["100%"]} width={["15%", "5%"]}>
+        <Box className="flexed" height={["100%"]} width={["25%", "5%"]}>
           <Button
-            onClick={()=>{router.push("/user/home")}}
+            onClick={() => {
+              router.push("/user/home");
+            }}
             className="flexed"
             height={["100%"]}
             width={["100%"]}
@@ -134,7 +135,9 @@ export const NavbarComponent = ()=>{
                     justifyContent={["flex-start"]}
                     borderBottom={["1px solid rgba(151, 151, 151, 0.36)"]}
                     gap={[4]}
-                    onClick={()=>{router.push(`/user/products/${items?.id}`)}}
+                    onClick={() => {
+                      router.push(`/user/products/${items?.id}`);
+                    }}
                   >
                     <Image
                       src={items?.images?.image[0]}
@@ -171,7 +174,13 @@ export const NavbarComponent = ()=>{
           justifyContent={["space-around"]}
           display={["none", "flex"]}
         >
-          <Button color={["#000"]}  onClick={()=>{router.push("/user/cart")}} position={"relative"}>
+          <Button
+            color={["#000"]}
+            onClick={() => {
+              router.push("/user/cart");
+            }}
+            position={"relative"}
+          >
             <Text
               position={"absolute"}
               top={0}
@@ -188,18 +197,38 @@ export const NavbarComponent = ()=>{
             </Text>
             <ShoppingCart size={30} />
           </Button>
-          <Button color={["#000"]}  onClick={()=>{router.push("/user/whishlist")}}>
+          <Button
+            color={["#000"]}
+            onClick={() => {
+              router.push("/user/whishlist");
+            }}
+          >
             <Heart />
           </Button>
 
-          <Button color={["#000"]}  onClick={()=>{router.push("/user/home")}}>
+          <Button
+            color={["#000"]}
+            onClick={() => {
+              router.push("/user/home");
+            }}
+          >
             Home
           </Button>
-          <Button color={["#000"]}  onClick={()=>{router.push("/user/products")}}>
+          <Button
+            color={["#000"]}
+            onClick={() => {
+              router.push("/user/products");
+            }}
+          >
             Products
           </Button>
           {user?.userType === "admin" ? (
-            <Button color={["#000"]}  onClick={()=>{router.push("/admin/adminpanel")}}>
+            <Button
+              color={["#000"]}
+              onClick={() => {
+                router.push("/admin/adminpanel");
+              }}
+            >
               Dashboard
             </Button>
           ) : (
@@ -218,7 +247,7 @@ export const NavbarComponent = ()=>{
           outline={"none"}
           onClick={() => {
             dropDown ? setdropDown(false) : setdropDown(true);
-            (dropDown);
+            dropDown;
           }}
         >
           <Box
@@ -251,7 +280,7 @@ export const NavbarComponent = ()=>{
           </Box>
           {dropDown && (
             <Box
-              height={["150px", "200px"]}
+              height={["200px", "250px"]}
               width={["100%"]}
               position={["absolute"]}
               zIndex={20}
@@ -269,43 +298,63 @@ export const NavbarComponent = ()=>{
                 borderRadius={["8px"]}
               >
                 <Button
-                  height={["18%"]}
+                  height={["15%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                   onClick={()=>{router.push("/user/cart")}}
+                  onClick={() => {
+                    router.push("/user/cart");
+                  }}
                   fontSize={["10px", "14px"]}
                 >
                   Cart
                 </Button>
                 <Button
-                  height={["18%"]}
+                  height={["15%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                   onClick={()=>{router.push("/user/orders")}}
+                  onClick={() => {
+                    router.push("/user/orders");
+                  }}
                   fontSize={["10px", "14px"]}
                 >
                   My orders
                 </Button>
                 <Button
-                  height={["18%"]}
+                  height={["15%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
                   bgColor={["#ACA0A0"]}
                   _hover={{ bgColor: "#8B4513" }}
-                   onClick={()=>{router.push("/user/whislist")}}
+                  onClick={() => {
+                    router.push("/user/whislist");
+                  }}
                   fontSize={["10px", "14px"]}
                 >
                   Whistlist
                 </Button>
                 <Button
-                  height={["18%"]}
+                  height={["15%"]}
+                  width={["95%"]}
+                  color={["#fff"]}
+                  className="flexed"
+                  bgColor={["#ACA0A0"]}
+                  _hover={{ bgColor: "#8B4513" }}
+                  onClick={() => {
+                    router.push("/user/products");
+                  }}
+                  fontSize={["10px", "14px"]}
+                >
+                  Products
+                </Button>
+                <Button
+                  height={["15%"]}
                   width={["95%"]}
                   color={["#fff"]}
                   className="flexed"
@@ -315,8 +364,7 @@ export const NavbarComponent = ()=>{
                   onClick={() => {
                     localStorage.removeItem("token");
                     setUser(null);
-                    return redirect("/")
-                    
+                    return redirect("/");
                   }}
                 >
                   Logout
