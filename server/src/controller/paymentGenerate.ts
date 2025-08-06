@@ -71,7 +71,7 @@ export const GenerateOrder = async (
 
     return res.json({ createdOrder: result });
   } catch (err) {
-    console.log(err);
+   return res.json({"failed":err})
   }
 };
 
