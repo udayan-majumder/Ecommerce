@@ -15,6 +15,7 @@ import { Suspense, useEffect } from "react";
 import Products from "../../store/Productstore";
 import { Provider } from "@/components/ui/provider";
 import { useAuth } from "../../hooks/userAuth";
+import Script from "next/script";
 // import { ChakraProvider,extendTheme } from "@chakra-ui/react";
 
 // const theme = extendTheme({
@@ -101,12 +102,17 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${opensans.variable} ${roboto.variable} ${rubik.variable}  ${tektur.variable} ${syncopate.variable}antialiased`}
       >
         <Provider>
           <UserProvider>
-            <Suspense>{children}</Suspense>
+            <Suspense>
+              <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+              {children}
+            </Suspense>
           </UserProvider>
         </Provider>
       </body>
