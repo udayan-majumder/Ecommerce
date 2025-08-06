@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/userAuth";
 import Products from "../../../../store/Productstore";
-import { redirect, usePathname,useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import {
   Box,
   Text,
@@ -30,7 +30,6 @@ import {
   CircleCheckBig,
 } from "lucide-react";
 
-
 function CartPage() {
   const { user } = useAuth();
   const {
@@ -56,18 +55,16 @@ function CartPage() {
   const [takeInput, settakeInput] = useState<boolean>(false);
   const [tempAddress, settempAddress] = useState<string>("");
   const [currentAddress, setcurrentAddress] = useState<string>("");
-  const date = new Date()
+  const date = new Date();
 
-const router = useRouter();
-const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
 
- 
-  useEffect(()=>{
-    if(!user){
-      return redirect("/auth/login")
+  useEffect(() => {
+    if (!user) {
+      return redirect("/auth/login");
     }
-  },[user])
-
+  }, [user]);
 
   const SortCart = (data: object[]) => {
     let temp = 0 + Shipping + CGST + SGST + platfromFee;
@@ -75,20 +72,19 @@ const pathname = usePathname();
       return setTotalPrice(0);
     }
     if (appliedPromocode?.code?.length > 0) {
-       for (let i = 0; i < PromocodesList.length; i++) {
-         const items:any = PromocodesList[i];
-         if (items?.name === appliedPromocode?.code) {
-           temp = temp - items?.value;
-           setDiscount(items?.value);
-           setappliedPromocode({
-             code: items.name,
-             valid: true,
-           });
-           break; 
-         }
-        setDiscount(0)
-       }
-      
+      for (let i = 0; i < PromocodesList.length; i++) {
+        const items: any = PromocodesList[i];
+        if (items?.name === appliedPromocode?.code) {
+          temp = temp - items?.value;
+          setDiscount(items?.value);
+          setappliedPromocode({
+            code: items.name,
+            valid: true,
+          });
+          break;
+        }
+        setDiscount(0);
+      }
     }
     data?.forEach((products: any) => {
       temp = temp + products?.productdetails?.price * products?.qty;
@@ -188,7 +184,7 @@ const pathname = usePathname();
         }
       );
       const finalRes = await res.json();
-  
+
       const getres = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/getcartdetails`,
         {
@@ -339,9 +335,12 @@ const pathname = usePathname();
     setReload(true);
   };
 
-  const CreateOrder = async () => {
-    if(currentAddress){
-    const adrs:any = UserAddress.filter((e:any)=>e.addressid === currentAddress)
+const CreateOrder = async () => {
+  if (currentAddress) {
+    const adrs: any = UserAddress.filter(
+      (e: any) => e.addressid === currentAddress
+    );
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/user/createorder`,
       {
@@ -350,8 +349,8 @@ const pathname = usePathname();
           "Content-type": "application/json",
         },
         body: JSON.stringify({
-          Amount: Math.round(TotalPrice * 100),
-          Currency: "USD",
+          Amount: Math.round(TotalPrice * 100 * 85),
+          Currency: "INR",
           UserId: user.userId,
           UsercartList: UserCartList,
           TotalPrice: TotalPrice,
@@ -364,28 +363,51 @@ const pathname = usePathname();
         }),
       }
     );
-     const order = await res.json();
-     const options: any = {
-       key: process.env.NEXT_PUBLIC_RAZORPAY_KEYID, // Replace with your Razorpay key_id
-       amount: order?.createdOrder?.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-       currency: "USD",
-       name: user?.userName,
-       description: "Test Transaction",
-       order_id: order?.createdOrder?.id, // This is the order_id created in the backend
-       callback_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/user/verifypayment`
-     };
-  
-     const rzp:any = new window.Razorpay(options);
-     rzp.open();
-    }else{
-      toast.error("No address is selected",{
-        position:"bottom-right"
-      })
-    }
-    
 
-   
-  };
+    const order = await res.json();
+
+    const razorpayOrderId = order?.createdOrder?.id; // ✅ Save to variable immediately
+
+    if (!razorpayOrderId) {
+      console.error("❌ Razorpay order ID is undefined");
+      return;
+    }
+
+    const options: any = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEYID,
+      amount: order?.createdOrder?.amount,
+      currency: "INR",
+      name: user?.userName,
+      description: "Test Transaction",
+      order_id: razorpayOrderId, // ✅ use saved variable,
+      handler: function (response: any) {
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/verifypayment`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: razorpayOrderId, // ✅ use saved variable
+            razorpay_signature: response.razorpay_signature,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => router.push(data?.redirect))
+          .catch((err) => console.error("Verification Error:", err));
+      },
+    };
+
+
+    const rzp: any = new window.Razorpay(options);
+    rzp.open();
+  } else {
+    toast.error("No address is selected", {
+      position: "bottom-right",
+    });
+  }
+};
+
 
   useEffect(() => {
     getUserCartDetails();
@@ -469,7 +491,7 @@ const pathname = usePathname();
                   padding={"5px 5px"}
                 >
                   <Box
-                    height={["30%","20%"]}
+                    height={["30%", "20%"]}
                     width={["95%"]}
                     className="flexed"
                     justifyContent={["space-between"]}
@@ -505,7 +527,7 @@ const pathname = usePathname();
                   >
                     {takeInput ? (
                       <Box
-                        height={["40%","30%"]}
+                        height={["40%", "30%"]}
                         width={["95%"]}
                         flex={"0 0 auto"}
                         padding={["5px 5px"]}
@@ -562,7 +584,7 @@ const pathname = usePathname();
                       {UserAddress.length > 0 ? (
                         UserAddress.map((data: any) => (
                           <Box
-                            height={["40%","30%"]}
+                            height={["40%", "30%"]}
                             width={["100%"]}
                             flex={"0 0 auto"}
                             borderBottom={"1px solid rgb(210,210,210)"}
@@ -623,7 +645,7 @@ const pathname = usePathname();
                   bgColor={"#fff"}
                 >
                   <Box
-                    height={["30%","20%"]}
+                    height={["30%", "20%"]}
                     width={["95%"]}
                     className="flexed"
                     justifyContent={["space-between"]}
@@ -636,7 +658,7 @@ const pathname = usePathname();
                   </Box>
                   <Box height={["80%"]} width={["90%"]} padding={"10px 0px"}>
                     <RadioGroup.Root
-                      height={["40%","30%"]}
+                      height={["40%", "30%"]}
                       width={["100%"]}
                       className="flexed"
                       justifyContent={["left"]}
@@ -673,7 +695,7 @@ const pathname = usePathname();
                 >
                   {/*Heading carList */}
                   <Box
-                    height={["20%","15%"]}
+                    height={["20%", "15%"]}
                     width={["95%"]}
                     className="flexed"
                     justifyContent={["space-between"]}
@@ -719,7 +741,7 @@ const pathname = usePathname();
                       UserCartList?.map((data: any) => (
                         <Box
                           key={data?.productid}
-                          height={["45%","35%"]}
+                          height={["45%", "35%"]}
                           width={["95%"]}
                           borderBottom={"1px solid rgb(220,220,220)"}
                           flex={"0 0 auto"}
@@ -772,7 +794,7 @@ const pathname = usePathname();
                           </Box>
                           <Box
                             height={["80%"]}
-                            width={["25%","30%"]}
+                            width={["25%", "30%"]}
                             className="flexed"
                             flexDirection={["column"]}
                             justifyContent={["space-evenly"]}
@@ -831,7 +853,7 @@ const pathname = usePathname();
                             color={"red"}
                             p={0}
                             maxW={"unset"}
-                            height={["50%","30%"]}
+                            height={["50%", "30%"]}
                             width={["8%", "5%"]}
                             fontSize={["12px", "14px"]}
                             _hover={{
@@ -869,7 +891,9 @@ const pathname = usePathname();
                           color={"#fff"}
                           padding={"8px 15px"}
                           borderRadius={"6px"}
-                           onClick={()=>{router.push("/user/products")}}
+                          onClick={() => {
+                            router.push("/user/products");
+                          }}
                           letterSpacing={1}
                         >
                           Browse Products <PackageSearch />
@@ -894,7 +918,7 @@ const pathname = usePathname();
               letterSpacing={0.5}
             >
               <Box
-                height={["85%","75%"]}
+                height={["85%", "75%"]}
                 width={["90%", "80%"]}
                 borderRadius={"8px"}
                 boxShadow={["0px 0px 2px 2px rgba(0,0,0,0.1)"]}
@@ -905,7 +929,7 @@ const pathname = usePathname();
                 padding={"10px 10px"}
               >
                 <Box
-                  height={["25%","30%"]}
+                  height={["25%", "30%"]}
                   width={["95%"]}
                   // bgColor={"teal"}
                   className="flexed"
@@ -913,7 +937,11 @@ const pathname = usePathname();
                   justifyContent={["space-evenly"]}
                   borderBottom={"1px solid rgb(210,210,210)"}
                 >
-                  <Text width={["100%"]} fontSize={["16px","20px"]} fontWeight={500}>
+                  <Text
+                    width={["100%"]}
+                    fontSize={["16px", "20px"]}
+                    fontWeight={500}
+                  >
                     Discount Code
                   </Text>
                   <Box
@@ -925,7 +953,7 @@ const pathname = usePathname();
                   >
                     <InputGroup>
                       <Input
-                      // height={["100%"]}
+                        // height={["100%"]}
                         placeholder="Enter your promocode"
                         onChange={(e) => {
                           setappliedPromocode({
@@ -948,7 +976,7 @@ const pathname = usePathname();
                       marginRight={1}
                       zIndex={2}
                       letterSpacing={0.5}
-                      fontSize={["12px","14px"]}
+                      fontSize={["12px", "14px"]}
                     >
                       Apply
                     </Button>
@@ -990,7 +1018,9 @@ const pathname = usePathname();
                       fontWeight={500}
                     >
                       {TotalPrice > 0
-                        ? (TotalPrice+Discount) - (Shipping + CGST + SGST + platfromFee)
+                        ? TotalPrice +
+                          Discount -
+                          (Shipping + CGST + SGST + platfromFee)
                         : 0}{" "}
                       $
                     </Text>
@@ -1098,14 +1128,16 @@ const pathname = usePathname();
                     fontWeight={500}
                   >
                     Total{" "}
-                    <Text fontSize={["16px", "18px"]} fontWeight={400}>{TotalPrice} $</Text>
+                    <Text fontSize={["16px", "18px"]} fontWeight={400}>
+                      {TotalPrice} $
+                    </Text>
                   </Text>
                   <Button
                     bgColor={"brown"}
                     width={["100%"]}
                     color={"#fff"}
                     letterSpacing={0.5}
-                    fontSize={["14px","16px"]}
+                    fontSize={["14px", "16px"]}
                     onClick={() => {
                       if (UserCartList.length > 0) {
                         return CreateOrder();

@@ -142,7 +142,7 @@ if(UserOrders){
                   className="flexed"
                   justifyContent={["space-between"]}
                 >
-                  <Text color={"teal"} fontSize={["10px", "14px"]}>
+                  <Text color={"teal"} fontSize={["8px", "10px"]}>
                     #{items?.orderid} | {items?.time}
                   </Text>
                   <Text

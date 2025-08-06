@@ -26,7 +26,12 @@ dotenv.config();
 const app: Express = express();
 const PORT: number = process.env.PORT_URL ? Number(process.env.PORT_URL) : 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [`${process.env.CLIENT_URL}`, "https://checkout.razorpay.com"],
+    methods: ["GET", "POST"],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRouter);

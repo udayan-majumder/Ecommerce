@@ -29,6 +29,7 @@ var instance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEYSECRET,
 });
 
+
 export const GenerateOrder = async (
   req: Request,
   res: Response
@@ -66,11 +67,13 @@ export const GenerateOrder = async (
         OrderStatus,
       },
     };
+     
 
     const result = await instance.orders.create(order);
-
+ 
     return res.json({ createdOrder: result });
   } catch (err) {
+  
    return res.json({"failed":err})
   }
 };
@@ -86,31 +89,61 @@ export const VerifyPayment = async (
   }: VerifyPaymentType = req.body;
 
 
-  const generateSignature = createHmac("sha256", process.env.RAZORPAY_KEYSECRET!)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
 
-  if(generateSignature !== razorpay_signature){
-    return res.json({"message":"invalid payment"})
-  }    
+  const generateSignature = createHmac(
+    "sha256",
+    process.env.RAZORPAY_KEYSECRET!
+  )
+    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+    .digest("hex");
 
-  const orderDetails = await instance.orders.fetch(razorpay_order_id)
+  if (generateSignature !== razorpay_signature) {
+    return res.json({ message: "invalid payment" });
+  }
+
+  const orderDetails = await instance.orders.fetch(razorpay_order_id);
   const {
-  UserId,
-  UsercartList,
-  TotalPrice,
-  PaymentStatus,
-  Time,
-  CurrentAddress,
-  OrderStatus
-}:any = orderDetails.notes;
+    UserId,
+    UsercartList,
+    TotalPrice,
+    PaymentStatus,
+    Time,
+    CurrentAddress,
+    OrderStatus,
+  }: any = orderDetails.notes;
 
-JSON.parse(UsercartList).map(async(data:any)=>{
-  const addItems = await pool.query("insert into userpayment values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",[UserId,data?.productid,data?.productdetails,data?.productdetails?.price,TotalPrice,razorpay_order_id,razorpay_payment_id,PaymentStatus,Time,CurrentAddress,OrderStatus,data?.qty])
-  const removeqty = await pool.query("update products set qty=qty - $1 where id=$2",[data?.qty,data?.productid])
-  const removeitem = await pool.query("delete from usercart where productid=$1 ",[data?.productid])
-})
+  JSON.parse(UsercartList).map(async (data: any) => {
+    await pool.query(
+      "INSERT INTO userpayment VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
+      [
+        UserId,
+        data?.productid,
+        data?.productdetails,
+        data?.productdetails?.price,
+        TotalPrice,
+        razorpay_order_id,
+        razorpay_payment_id,
+        PaymentStatus,
+        Time,
+        CurrentAddress,
+        OrderStatus,
+        data?.qty,
+      ]
+    );
 
-return res.redirect(`${process.env.CLIENT_URL}/user/products`)
+    await pool.query("UPDATE products SET qty = qty - $1 WHERE id = $2", [
+      data?.qty,
+      data?.productid,
+    ]);
 
+    await pool.query("DELETE FROM usercart WHERE productid = $1", [
+      data?.productid,
+    ]);
+  });
+
+
+  return res.status(200).json({
+    success: true,
+    redirect: `${process.env.CLIENT_URL}/user/products`,
+  });
 };
